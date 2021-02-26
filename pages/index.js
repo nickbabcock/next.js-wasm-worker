@@ -1,26 +1,16 @@
-import { withRouter } from 'next/router'
-import dynamic from 'next/dynamic'
-import Link from 'next/link'
+import { useEffect, useRef } from "react";
 
-const RustComponent = dynamic({
-  loader: async () => {
-    // Import the wasm module
-    const rustModule = await import('../add.wasm')
-    // Return a React component that calls the add_one method on the wasm module
-    return (props) => <div>{rustModule.add_one(props.number)}</div>
-  },
-})
+const Page = () => {
+  const workerRef = useRef();
+  useEffect(() => {
+    if (workerRef.current === undefined) {
+      workerRef.current = new Worker(new URL("./worker.js", import.meta.url));
+    }
+  }, []);
 
-const Page = ({ router: { query } }) => {
-  const number = parseInt(query.number || 30)
   return (
-    <div>
-      <RustComponent number={number} />
-      <Link href={`/?number=${number + 1}`}>
-        <a>+</a>
-      </Link>
-    </div>
-  )
-}
+    <button onClick={() => workerRef.current.postMessage([])}>Click</button>
+  );
+};
 
-export default withRouter(Page)
+export default Page;
