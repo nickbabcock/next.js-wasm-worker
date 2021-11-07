@@ -4,7 +4,7 @@ const Page = () => {
   const workerRef = useRef();
   useEffect(() => {
     if (workerRef.current === undefined) {
-      workerRef.current = new Worker(new URL("./worker.js", import.meta.url));
+      workerRef.current = new Worker(new URL("../lib/worker.js", import.meta.url));
     }
   }, []);
 
